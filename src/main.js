@@ -17,9 +17,7 @@ import '@/icons' // icon
 import '@/permission' // permission control
 import '@/components/templatePage/static/common/common.less'
 
-
 Vue.use(ElementUI, { locale })
-import('element-ui/lib/theme-chalk/index.css')
 Vue.use(VCharts)
 
 Vue.config.productionTip = false
