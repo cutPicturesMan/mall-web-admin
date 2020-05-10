@@ -51,19 +51,6 @@
       </el-form>
     </el-card>
     <img :src="login_center_bg" class="login-center-layout">
-    <el-dialog
-            title="下载地址"
-            :visible.sync="dialogVisible"
-            width="40%">
-      <el-form  ref="brandFrom" label-width="150px">
-        <el-form-item style="margin-bottom: 10px">
-          <el-button style="width: 100%" type="primary"  @click.native.prevent="handleGit">
-            下载地址
-          </el-button>
-        </el-form-item>
-      </el-form>
-
-    </el-dialog>
   </div>
 
 </template>
@@ -99,7 +86,6 @@
           password: [{required: true, trigger: 'blur', validator: validatePass}]
         },
         loading: false,
-        dialogVisible:true,
         pwdType: 'password',
         login_center_bg
       }
@@ -117,9 +103,6 @@
       },
       handleStore() {
         this.$router.push({path: '/acceptStore'})
-      },
-      handleGit() {
-        window.location.href='https://gitee.com/zscat/mallplus';
       },
       handleLogin() {
         this.$refs.loginForm.validate(valid => {
