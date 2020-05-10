@@ -60,7 +60,7 @@
                 <el-table-column label="状态" align="center">
                   <template slot-scope="scope">
                     <el-switch
-                      @change="handleStatusStatusChange(scope.$index, scope.row)"
+                      @change="handleStatusChange(scope.$index, scope.row)"
                       :active-value="1"
                       :inactive-value="0"
                       v-model="scope.row.status">
@@ -101,128 +101,139 @@
     </div>
 </template>
 <script>
-    import {fetchList, deleteHelpCategory} from '@/api/sms/groupActivity'
+	import {fetchList, deleteHelpCategory, updateHelpCategory} from '@/api/sms/groupActivity'
 
-    export default {
-        name: 'helpCategoryList',
-        data() {
-            return {
-                operates: [
+	export default {
+		name: 'helpCategoryList',
+		data() {
+			return {
+				operates: [
 
-                ],
-                operateType: null,
-                listQuery: {
-                    keyword: null,
-                    pageNum: 1,
-                    pageSize: 10
-                },
-                list: null,
-                total: null,
-                listLoading: true,
-                multipleSelection: []
-            }
-        },
-        created() {
-            this.getList();
-        },
-        methods: {
-            getList() {
-                this.listLoading = true;
-                fetchList(this.listQuery).then(response => {
-                    this.listLoading = false;
-                this.list = response.data.records;
-                this.total = response.data.total;
-                this.totalPage = response.data.pages;
-                this.pageSize = response.data.size;
-            });
-            },
-            handleSelectionChange(val) {
-                this.multipleSelection = val;
-            },
-            handleUpdate(index, row) {
-                this.$router.push({path: '/sms/updategroupActivity', query: {id: row.id}})
-            },
-            handleDelete(index, row) {
-                this.$confirm('是否要删除该品牌', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    deleteHelpCategory(row.id).then(response => {
-                    this.$message({
-                    message: '删除成功',
-                    type: 'success',
-                    duration: 1000
-                });
-                this.getList();
-            });
-            });
-            },
-            getProductList(index, row) {
-                console.log(index, row);
-            },
-            getProductCommentList(index, row) {
-                console.log(index, row);
-            },
+				],
+				operateType: null,
+				listQuery: {
+					keyword: null,
+					pageNum: 1,
+					pageSize: 10
+				},
+				list: null,
+				total: null,
+				listLoading: true,
+				multipleSelection: []
+			}
+		},
+		created() {
+			this.getList();
+		},
+		methods: {
+			getList() {
+				this.listLoading = true;
+				fetchList(this.listQuery).then(response => {
+					this.listLoading = false;
+					this.list = response.data.records;
+					this.total = response.data.total;
+					this.totalPage = response.data.pages;
+					this.pageSize = response.data.size;
+				});
+			},
+			handleSelectionChange(val) {
+				this.multipleSelection = val;
+			},
+			handleUpdate(index, row) {
+				this.$router.push({path: '/sms/updategroupActivity', query: {id: row.id}})
+			},
+			handleDelete(index, row) {
+				this.$confirm('是否要删除该品牌', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					deleteHelpCategory(row.id).then(response => {
+						this.$message({
+							message: '删除成功',
+							type: 'success',
+							duration: 1000
+						});
+						this.getList();
+					});
+				});
+			},
+			handleStatusChange(index, row){
+				updateHelpCategory(row.id, {status: row.status}).then(response => {
+					this.$message({
+						type: 'success',
+						message: '修改成功!'
+					});
+				}).catch(() => {
+					// 还原状态
+					row.status = row.status == 1 ? 0 : 1;
+				});
+			},
+			getProductList(index, row) {
+				console.log(index, row);
+			},
+			getProductCommentList(index, row) {
+				console.log(index, row);
+			},
 
 
-            handleSizeChange(val) {
-                this.listQuery.pageNum = 1;
-                this.listQuery.pageSize = val;
-                this.getList();
-            },
-            handleCurrentChange(val) {
-                this.listQuery.pageNum = val;
-                this.getList();
-            },
-            searchHelpCategoryList() {
-                this.listQuery.pageNum = 1;
-                this.getList();
-            },
-            handleBatchOperate() {
-                console.log(this.multipleSelection);
-                if (this.multipleSelection < 1) {
-                    this.$message({
-                        message: '请选择一条记录',
-                        type: 'warning',
-                        duration: 1000
-                    });
-                    return;
-                }
-                let showStatus = 0;
-                if (this.operateType === 'showHelpCategory') {
-                    showStatus = 1;
-                } else if (this.operateType === 'hideHelpCategory') {
-                    showStatus = 0;
-                } else {
-                    this.$message({
-                        message: '请选择批量操作类型',
-                        type: 'warning',
-                        duration: 1000
-                    });
-                    return;
-                }
-                let ids = [];
-                for (let i = 0; i < this.multipleSelection.length; i++) {
-                    ids.push(this.multipleSelection[i].id);
-                }
-                let data = new URLSearchParams();
-                data.append("ids", ids);
-                data.append("status", showStatus);
-                updateShowStatus(data).then(response => {
-                    this.getList();
-                this.$message({
-                    message: '修改成功',
-                    type: 'success',
-                    duration: 1000
-                });
-            });
-            },
-            addHelpCategory() {
-                this.$router.push({path: '/sms/addgroupActivity'})
-            }
-        }
-    }
+			handleSizeChange(val) {
+				this.listQuery.pageNum = 1;
+				this.listQuery.pageSize = val;
+				this.getList();
+			},
+			handleCurrentChange(val) {
+				this.listQuery.pageNum = val;
+				this.getList();
+			},
+			searchHelpCategoryList() {
+				this.listQuery.pageNum = 1;
+				this.getList();
+			},
+			handleBatchOperate() {
+				console.log(this.multipleSelection);
+				if (this.multipleSelection < 1) {
+					this.$message({
+						message: '请选择一条记录',
+						type: 'warning',
+						duration: 1000
+					});
+					return;
+				}
+				let showStatus = 0;
+				if (this.operateType === 'showHelpCategory') {
+					showStatus = 1;
+				} else if (this.operateType === 'hideHelpCategory') {
+					showStatus = 0;
+				} else {
+					this.$message({
+						message: '请选择批量操作类型',
+						type: 'warning',
+						duration: 1000
+					});
+					return;
+				}
+				let ids = [];
+				for (let i = 0; i < this.multipleSelection.length; i++) {
+					ids.push(this.multipleSelection[i].id);
+				}
+				let data = new URLSearchParams();
+				data.append("ids", ids);
+				data.append("status", showStatus);
+				updateShowStatus(data).then(response => {
+					this.getList();
+					this.$message({
+						message: '修改成功',
+						type: 'success',
+						duration: 1000
+					});
+				});
+			},
+			addHelpCategory() {
+				this.$router.push({path: '/sms/addgroupActivity'})
+			}
+		}
+	}
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
 
