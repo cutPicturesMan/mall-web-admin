@@ -112,7 +112,7 @@
 				],
 				operateType: null,
 				listQuery: {
-					keyword: null,
+					name: '',
 					pageNum: 1,
 					pageSize: 10
 				},
@@ -128,7 +128,18 @@
 		methods: {
 			getList() {
 				this.listLoading = true;
-				fetchList(this.listQuery).then(response => {
+				const {
+					name,
+					pageNum,
+					pageSize
+                } = this.listQuery;
+				let params = {
+					pageNum,
+					pageSize
+                };
+				name && (params.name = name);
+
+				fetchList(params).then(response => {
 					this.listLoading = false;
 					this.list = response.data.records;
 					this.total = response.data.total;
