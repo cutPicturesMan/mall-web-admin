@@ -159,7 +159,7 @@
 				});
 			},
 			handleStatusChange(index, row){
-				updateHelpCategory(row.id, {status: row.status}).then(response => {
+				updateHelpCategory(row.id, row).then(response => {
 					this.$message({
 						type: 'success',
 						message: '修改成功!'
