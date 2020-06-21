@@ -120,7 +120,7 @@
           pageNum: 1,
           pageSize: 5
         },
-        parentId: 0
+        parentId: '0'
       }
     },
     created() {
@@ -135,11 +135,7 @@
     },
     methods: {
       resetParentId(){
-        if (this.$route.query.parentId != null) {
-          this.parentId = this.$route.query.parentId;
-        } else {
-          this.parentId = 0;
-        }
+        this.$route.query.parentId && (this.parentId = this.$route.query.parentId);
       },
       handleAddProductCate() {
         this.$router.push('/pms/addProductCate');

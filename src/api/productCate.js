@@ -7,9 +7,9 @@ export function fetchListAll(params) {
     params:params
   })
 }
-export function fetchList(parentId,params) {
+export function fetchList(parentId, params) {
   return request({
-    url:'/pms/PmsProductCategory/list/'+parentId,
+    url:`/pms/PmsProductCategory/list${parentId ? '/' + parentId : ''}`,
     method:'get',
     params:params
   })
